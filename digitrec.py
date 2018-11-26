@@ -1,46 +1,36 @@
-from keras.datasets import mnist
-import matplotlib.pyplot as plt
-# load (downloaded if needed) the MNIST dataset
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
-# plot 4 images as gray scale
-plt.subplot(221)
-plt.imshow(X_train[0], cmap=plt.get_cmap('gray'))
-plt.subplot(222)
-plt.imshow(X_train[1], cmap=plt.get_cmap('gray'))
-plt.subplot(223)
-plt.imshow(X_train[2], cmap=plt.get_cmap('gray'))
-plt.subplot(224)
-plt.imshow(X_train[3], cmap=plt.get_cmap('gray'))
-# show the plot
-plt.show()
-import numpy
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.utils import np_utils
-# fix random seed for reproducibility
-seed = 7
-numpy.random.seed(seed)
-# load data
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
-# flatten 28*28 images to a 784 vector for each image
-num_pixels = X_train.shape[1] * X_train.shape[2]
-X_train = X_train.reshape(X_train.shape[0], num_pixels).astype('float32')
-X_test = X_test.reshape(X_test.shape[0], num_pixels).astype('float32')
-# normalize inputs from 0-255 to 0-1
-X_train = X_train / 255
-X_test = X_test / 255
-# one hot encode outputs
-y_train = np_utils.to_categorical(y_train)
-y_test = np_utils.to_categorical(y_test)
-num_classes = y_test.shape[1]
-# define baseline model
-def baseline_model():
-    # create model
-    model = Sequential()
-    model.add(Dense(num_pixels, input_dim=num_pixels, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(num_classes, kernel_initializer='normal', activation='softmax'))
-    # Compile model
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    return model
+# Import keras.
+import keras as kr
+import numpy as np
+import gzip
+
+# Start a neural network, building it by layers.
+model = kr.models.Sequential()
+
+# Add a hidden layer with 1000 neurons and an input layer with 784.
+model.add(kr.layers.Dense(units=600, activation='sigmoid', input_dim=784))
+model.add(kr.layers.Dense(units=400, activation='relu', input_dim=784))
+# Add a three neuron output layer.
+model.add(kr.layers.Dense(units=10, activation='softmax'))
+
+# Build the graph.
+# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
+
+with gzip.open('data/train-images-idx3-ubyte.gz', 'rb') as f:
+    train_img = f.read()
+with gzip.open('data/train-labels-idx1-ubyte.gz', 'rb') as f:
+    train_lbl = f.read()
+    
+train_img = ~np.array(list(train_img[16:])).reshape(60000, 28, 28).astype(np.uint8)/255.0
+train_lbl =  np.array(list(train_lbl[ 8:])).astype(np.uint8)
+
+inputs = train_img.reshape(60000, 784)
+
+# For encoding categorical variables.
+import sklearn.preprocessing as pre
+
+encoder = pre.LabelBinarizer()
+encoder.fit(train_lbl)
+outputs = encoder.transform(train_lbl)
+
+model.fit(inputs, outputs, epochs=4, batch_size=100)
