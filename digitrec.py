@@ -2,6 +2,8 @@
 import keras as kr
 import numpy as np
 import gzip
+# For encoding categorical variables.
+import sklearn.preprocessing as pre
 
 with gzip.open('data/train-images-idx3-ubyte.gz', 'rb') as f:
     train_img = f.read()
@@ -33,14 +35,11 @@ train_lbl =  np.array(list(train_lbl[ 8:])).astype(np.uint8)
 
 inputs = train_img.reshape(60000, 784)
 
-# For encoding categorical variables.
-import sklearn.preprocessing as pre
-
 encoder = pre.LabelBinarizer()
 encoder.fit(train_lbl)
 outputs = encoder.transform(train_lbl)
 
-model.fit(inputs, outputs, epochs=10, batch_size=98)
+model.fit(inputs, outputs, epochs=10, batch_size=127)
 
 with gzip.open('data/t10k-images-idx3-ubyte.gz', 'rb') as f:
     test_img = f.read()
