@@ -14,7 +14,6 @@ Assignment for Emerging Technology 2018
 3. Navigate to emerg-tech-assign specified location using the command promp.
 4. Run command "python digitrec.py".
 
-
 ### NumPy Random.ipynb
 * This notebook breaks down the numpy random package showing the most useful packages within it for software Development
 * I go into detail on the numpy.random , numpy.arrange, numpy.array libraries.
@@ -33,6 +32,8 @@ Assignment for Emerging Technology 2018
 * This is a python Script which trains a neural network to determine what digit is input.
 * I use the mnsit dataset to  train this network.
 * I use the Mnist dataset (test files) to test the network.
+
+
 
 ### digit-recognition.ipynb
 *This is a dataset to explain exactly the steps and design decisions made when creating the digitrec.py file

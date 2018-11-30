@@ -51,4 +51,3 @@ test_img = ~np.array(list(test_img[16:])).reshape(10000, 784).astype(np.uint8) /
 test_lbl =  np.array(list(test_lbl[ 8:])).astype(np.uint8)
 
 print((encoder.inverse_transform(model.predict(test_img)) == test_lbl).sum())
-
